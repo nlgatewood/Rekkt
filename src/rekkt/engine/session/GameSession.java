@@ -2,6 +2,8 @@ package rekkt.engine.session;
 
 import rekkt.engine.command.Command;
 import rekkt.engine.command.Parser;
+import rekkt.engine.maps.Room;
+import rekkt.engine.maps.WorldMap;
 import rekkt.engine.characters.*;
 
 import java.util.Scanner;
@@ -16,6 +18,9 @@ public class GameSession {
 	
 	private Parser commandParser;
 	private Player player;
+	private WorldMap mapO;
+	private String currentZone;
+	private Room currentRoom;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
@@ -23,6 +28,7 @@ public class GameSession {
 	public GameSession() {
 		
 		commandParser = new Parser();
+		currentZone = "1";
 	}
 	
 	/*---------------------------------------------------------------------
@@ -61,6 +67,11 @@ public class GameSession {
 	private void playGame() {
 		
 		boolean wantToQuit = false;
+		
+		//Create World - Set Room
+		mapO = new WorldMap();
+		currentRoom = mapO.getZone(currentZone).getRoom("1001");
+		System.out.println(currentRoom.getDescription());
 		
 		do {
 			Command command = commandParser.createCommand();
@@ -114,7 +125,15 @@ public class GameSession {
 			return;
 		}
 		
-		System.out.println("GO "+secondWord+"!");
+		String newRoom = currentRoom.getExitRoom(secondWord);
+		
+		
+		if(newRoom != null) {
+			
+			currentRoom = mapO.getZone(currentZone).getRoom(newRoom);
+		}
+		
+		System.out.println(currentRoom.getDescription());
 		
 	}
 }
