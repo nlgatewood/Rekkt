@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validcommands>
+	<command id="1001">
+		<value>go</value>
+	</command>
+	<command id="1002">
+		<value>talk</value>
+	</command>
+	<command id="1003">
+		<value>inspect</value>
+	</command>
+	<command id="1004">
+		<value>quit</value>
+	</command>
+</validcommands>

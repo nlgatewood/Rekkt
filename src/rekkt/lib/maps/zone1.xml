@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zone>
+	<room id="1001">
+		<xcoord>1</xcoord>
+		<ycoord>1</ycoord>
+		<name>Hospital Room #233</name>
+		<description>Dark and full of moss</description>
+	</room>
+	<room id="1002">
+		<xcoord>1</xcoord>
+		<ycoord>2</ycoord>
+		<name>Hospital Hall - Ward B</name>
+		<description>A flickering light hangs above you</description>
+	</room>
+	<room id="1003">
+		<xcoord>2</xcoord>
+		<ycoord>1</ycoord>
+		<name>Hospital Room #235</name>
+		<description>A pile of beds sit in the corner</description>
+	</room>
+	<room id="1004">
+		<xcoord>2</xcoord>
+		<ycoord>2</ycoord>
+		<name>Hospital Hall - Ward B</name>
+		<description>A corpse lays next to you</description>
+	</room>
+</zone>
