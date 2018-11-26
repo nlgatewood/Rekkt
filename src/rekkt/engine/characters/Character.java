@@ -1,4 +1,8 @@
 package rekkt.engine.characters;
+
+import java.util.ArrayList;
+import rekkt.engine.items.Item;
+
 /**
  * 
  * @author nlgatewood
@@ -8,6 +12,7 @@ package rekkt.engine.characters;
 public class Character {
 	
 	private String name;
+	private ArrayList<Item> inventory;
 
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
@@ -15,6 +20,23 @@ public class Character {
 	public Character(String name) {
 		
 		this.name = name;
+		inventory = new ArrayList<Item>();
+	}
+	
+	/*---------------------------------------------------------------------
+	 * addInventory(Item item) - Add to inventory
+	 *---------------------------------------------------------------------*/
+	public void addInventory(Item item) {
+	
+		inventory.add(item);
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getInventorySize() - Get number of items in Inventory
+	 *---------------------------------------------------------------------*/
+	public int getInventorySize() {
+		
+		return inventory.size();
 	}
 	
 	/*---------------------------------------------------------------------

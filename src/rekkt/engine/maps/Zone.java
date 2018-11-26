@@ -2,10 +2,8 @@ package rekkt.engine.maps;
 
 import java.io.File;
 import java.util.HashMap;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,7 +12,7 @@ import org.w3c.dom.NodeList;
 /**
  * 
  * @author nlgatewood
- *
+ * @Description Instance of a zone. Contains Room objects that belong in the zone
  */
 
 public class Zone {
@@ -34,16 +32,16 @@ public class Zone {
 		zoneName = null;
 		rooms = new HashMap<String,Room>();
 		
-		setRooms();
+		//Load Rooms in Zone
+		loadRooms();
 	}
 	
 	/*---------------------------------------------------------------------
-	 * setRooms() - 
+	 * loadRooms() - Load all rooms in the zone into the Hash
 	 *---------------------------------------------------------------------*/
-	private void setRooms() {
+	private void loadRooms() {
 		
 	    try {
-
 	    	File fXmlFile = new File("src/rekkt/lib/maps/"+zoneFile+".xml");
 	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -65,26 +63,24 @@ public class Zone {
 	    		if(nNode.getNodeType() == Node.ELEMENT_NODE){
 	    			
 	    			Element eElement = (Element) nNode;
-	    			System.out.println(eElement.getElementsByTagName("name").item(0).getTextContent());
+
 	    			String id = eElement.getAttribute("id");
 	    			String xCoord = eElement.getElementsByTagName("xcoord").item(0).getTextContent();
 	    			String yCoord = eElement.getElementsByTagName("ycoord").item(0).getTextContent();
 	    			String name = eElement.getElementsByTagName("name").item(0).getTextContent();
 	    			String description = eElement.getElementsByTagName("description").item(0).getTextContent();
 	    			
-	    			//Get rooms exits
+	    			//Get rooms exits, add to hash
 	    			NodeList exitNode = eElement.getElementsByTagName("exit");
 	    			HashMap<String,String> exits = new HashMap<String,String>();
 	    			  			
 	    			for(int y=0; y<exitNode.getLength(); y++) {
-	    				//exitNode.item(y).getAttributes().item(0);
+
 	    				exits.put(exitNode.item(y).getAttributes().item(0).getTextContent(), exitNode.item(y).getTextContent());
-	    				System.out.println(exitNode.item(y).getTextContent());
 	    			}
 	    			
 	    			//Add room to zone hashMap
-	    			Room newRoom = new Room(id, xCoord, yCoord, name, description, exits);
-	    			rooms.put(id, newRoom);
+	    			rooms.put(id, new Room(id, xCoord, yCoord, name, description, exits));
 	    		}
 	    	}	    	
 	    } 
@@ -99,11 +95,20 @@ public class Zone {
 		
 		return rooms.get(roomId);
 	}
+	
 	/*---------------------------------------------------------------------
-	 * getId() - Return ID
+	 * getId() - Return the Zone's ID
 	 *---------------------------------------------------------------------*/
 	public String getId() {
 		
 		return zoneId;
+	}
+
+	/*---------------------------------------------------------------------
+	 * getName() - Return Zone's Name
+	 *---------------------------------------------------------------------*/
+	public String getName() {
+		
+		return zoneName;
 	}
 }

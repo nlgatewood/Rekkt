@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * 
  * @author nlgatewood
+ * @Description Instance of a room
  *
  */
 
@@ -33,8 +34,18 @@ public class Room {
 		for(String direction : exits.keySet()) {
 			
 			this.exits.put(direction, exits.get(direction));
-			System.out.println(">"+direction+"<"+this.exits.get(direction));
 		}
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getExit(String direction)
+	 *---------------------------------------------------------------------*/
+	public void printRoomDescription() {
+		
+		System.out.println("\n*--------------------------------------------------------\n"+
+						   "* "+name+" ["+xCoord+"-"+yCoord+"]\n"+
+						   "*--------------------------------------------------------\n"+
+						   " "+description+"\n");
 	}
 	
 	/*---------------------------------------------------------------------
@@ -46,10 +57,42 @@ public class Room {
 	}
 
 	/*---------------------------------------------------------------------
-	 * getDescription()
+	 * getId() - Return Room Id
+	 *---------------------------------------------------------------------*/
+	public String getId() {
+		
+		return id;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getName() - Return Room name
+	 *---------------------------------------------------------------------*/
+	public String getName() {
+		
+		return name;
+	}
+
+	/*---------------------------------------------------------------------
+	 * getDescription() - Return Room's description
 	 *---------------------------------------------------------------------*/
 	public String getDescription() {
 		
 		return description;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getXCoord() - Return Room's X-Coordinate
+	 *---------------------------------------------------------------------*/
+	public String getXCoord() {
+		
+		return xCoord;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getYCoord() - Return Room's Y-Coordinate
+	 *---------------------------------------------------------------------*/
+	public String getYCoord() {
+		
+		return yCoord;
 	}
 }

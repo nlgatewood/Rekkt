@@ -71,7 +71,8 @@ public class GameSession {
 		//Create World - Set Room
 		mapO = new WorldMap();
 		currentRoom = mapO.getZone(currentZone).getRoom("1001");
-		System.out.println(currentRoom.getDescription());
+
+		currentRoom.printRoomDescription();
 		
 		do {
 			Command command = commandParser.createCommand();
@@ -99,10 +100,19 @@ public class GameSession {
 			System.out.println("'"+commandWord+"' command not recognized");
 		}
 		
-		//Process Command
+		//Process "go" Command
 		if(commandWord.equals("go")) {
 			
-			moveRoom(command);
+			moveCmd(command);
+		}
+		if(commandWord.equals("inspect")) {
+			
+			inspectCmd(command);
+		}
+		//Process "help" Command
+		if(commandWord.equals("help")) {
+			
+			helpCmd(command);
 		}
 		else if(commandWord.equals("quit")) {
 			
@@ -113,27 +123,68 @@ public class GameSession {
 	}
 	
 	/*---------------------------------------------------------------------
-	 * moveRoom() - Move to the specified room
+	 * moveCmd() - Process the 'go' command. Move to the specified room
 	 *---------------------------------------------------------------------*/
-	private void moveRoom(Command command){
+	private void moveCmd(Command command){
 		
 		String secondWord = command.getSecondWord();
 		
 		if(secondWord == null) {
 			
-			System.out.println("Go Where?");
+			System.out.println("Go where?");
 			return;
 		}
 		
+		//Get new Room - Move to new room if found
 		String newRoom = currentRoom.getExitRoom(secondWord);
-		
 		
 		if(newRoom != null) {
 			
 			currentRoom = mapO.getZone(currentZone).getRoom(newRoom);
+			currentRoom.printRoomDescription();
+		}
+		else {
+			System.out.println("Can't go '"+secondWord+"'");
+		}
+	}
+
+	/*---------------------------------------------------------------------
+	 * inspectCmd() - Process the 'inspect' command. Inspect area, inventory,
+	 * 				  or character
+	 *---------------------------------------------------------------------*/
+	private void inspectCmd(Command command) {
+		
+		String secondWord = command.getSecondWord();
+		
+		if(secondWord == null) {
+			
+			System.out.println("Inspect what?");
+			return;
 		}
 		
-		System.out.println(currentRoom.getDescription());
+		if(secondWord.equals("area")) {
+			
+			currentRoom.printRoomDescription();
+		}
 		
+	}
+	
+	/*---------------------------------------------------------------------
+	 * helpCmd() - Process the 'help' command. Display Help screen
+	 *---------------------------------------------------------------------*/
+	private void helpCmd(Command command){
+		
+		System.out.println("\nHelp: Controls\n"+
+                "----------------------------------------------------------------------------------------------------------------\n"+
+                "go <north|south|east|west>                                   Move across the map\n"+
+                "quit                                                         Quit the game\n"+
+                "help                                                         Display the help screen\n"+
+                "inspect <area|inventory|[item name]|[character name]>        Inspect details about an area or item\n"+
+                "use [item name]                                              Use an item.  Must be in possession of that item\n"+
+                "take [item name]                                             Take an item from the area and put it in your inventory\n"+
+                "drop [item name]                                             Drop and item from your inventory into the area\n"+
+                "talk [character name]                                        Talk to a character in an area\n"+
+                "drink [item name]                                            Drink the specified item\n"+
+                "----------------------------------------------------------------------------------------------------------------\n");
 	}
 }
