@@ -3,6 +3,7 @@ package rekkt.engine.session;
 import rekkt.engine.command.Command;
 import rekkt.engine.command.Parser;
 import rekkt.engine.items.ContainerItem;
+import rekkt.engine.items.Item;
 import rekkt.engine.items.MiscItem;
 import rekkt.engine.maps.Room;
 import rekkt.engine.maps.WorldMap;
@@ -55,12 +56,13 @@ public class GameSession {
 			inputLine = reader.nextLine();
 			
 			player = new Player(inputLine);
-			player.addContainerItem(new ContainerItem("Bag",5));
+			//player.addContainerItem(new ContainerItem("Bag",5));
 			player.addInventoryItem(new MiscItem("trash1"));
 			player.addInventoryItem(new MiscItem("trash2"));
 			player.addInventoryItem(new MiscItem("trash3"));
-			player.addInventoryItem(new MiscItem("trash4"));
-			player.addInventoryItem(new MiscItem("trash5"));
+			//player.addInventoryItem(new MiscItem("trash4"));
+			//player.addInventoryItem(new MiscItem("trash5"));
+			
 			
 			
 			playGame(); 
@@ -81,6 +83,9 @@ public class GameSession {
 		//Create World - Set Room
 		mapO = new WorldMap();
 		currentRoom = mapO.getZone(currentZone).getRoom("1001");
+		
+		currentRoom.addRoomItem(new Item("potion1"));
+		currentRoom.addRoomItem(new Item("potion2"));
 
 		currentRoom.printRoomDescription();
 		
@@ -122,7 +127,11 @@ public class GameSession {
 		else if(commandWord.equals("take")) {
 			
 			takeCmd(command);
-		}		
+		}
+		else if(commandWord.equals("drop")) {
+			
+			dropCmd(command);
+		}	
 		else if(commandWord.equals("help")) {
 			
 			helpCmd(command);
@@ -175,11 +184,28 @@ public class GameSession {
 			return;
 		}
 		
+		//Inspect the area
 		if(secondWord.equals("area")) {
 			
 			currentRoom.printRoomDescription();
 		}
-		
+		//Inspect the players inventory
+		else if(secondWord.equals("inventory")) {
+			
+			player.printInventoryItems();
+		}
+		//Else, inspect the items
+		else {
+			Item inspectItem = currentRoom.getRoomItem(secondWord);
+			
+			if(inspectItem != null) {
+				
+				System.out.println(inspectItem.getName());
+			}
+			else {
+				System.out.println("Can't find a "+secondWord+"to inspect.");
+			}
+		}
 	}
 	
 	/*---------------------------------------------------------------------
@@ -195,6 +221,42 @@ public class GameSession {
 			return;
 		}
 		
+		//Take item from environment
+		Item takeItem = currentRoom.getRoomItem(secondWord);
+			
+		if(takeItem != null) {
+				
+			player.addInventoryItem(takeItem);
+			System.out.println(takeItem.getName()+" added to your inventory");
+		}
+		else {
+			System.out.println("Can't find a "+secondWord+"to take");
+		}
+		
+	}
+	
+	/*---------------------------------------------------------------------
+	 * dropCmd() - Drop item from your inventory into the current room
+	 *---------------------------------------------------------------------*/
+	private void dropCmd(Command command) {
+		
+		String secondWord = command.getSecondWord();
+		
+		if(secondWord == null) {
+			
+			System.out.println("Drop what?");
+			return;
+		}
+		
+		Item item = player.getInventoryItem(secondWord);
+		
+		if(item != null) {
+			
+			currentRoom.addRoomItem(item);
+		}
+		else {
+			System.out.println(secondWord+" not found in player inventory");
+		}
 	}
 	
 	/*---------------------------------------------------------------------

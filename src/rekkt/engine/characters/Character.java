@@ -32,6 +32,38 @@ public class Character {
 	}
 	
 	/*---------------------------------------------------------------------
+	 * getInventoryItem(String itemName) - get item from player's inventory
+	 *---------------------------------------------------------------------*/
+	public Item getInventoryItem(String itemName) {
+	
+		for(Item item : inventory) {
+			
+			if(item.getName().equals(itemName)) {
+				
+				inventory.remove(item);
+				return item;
+			}
+		}
+		
+		return null;
+	}
+
+	/*---------------------------------------------------------------------
+	 * printInventoryItems() - Print a list of inventory items
+	 *---------------------------------------------------------------------*/
+	public void printInventoryItems() {
+		
+		System.out.println("**************Inventory Items**************");
+		
+		for(Item item : inventory) {
+			
+			System.out.println(item.getName());
+		}
+		
+		System.out.println("*******************************************");
+	}
+
+	/*---------------------------------------------------------------------
 	 * getInventorySize() - Get number of items in Inventory
 	 *---------------------------------------------------------------------*/
 	public int getInventorySize() {

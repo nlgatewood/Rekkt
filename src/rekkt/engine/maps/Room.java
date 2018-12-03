@@ -51,6 +51,8 @@ public class Room {
 						   "* "+name+" ["+xCoord+"-"+yCoord+"]\n"+
 						   "*--------------------------------------------------------\n"+
 						   " "+description+"\n");
+		
+		printRoomItems();
 	}
 	
 	/*---------------------------------------------------------------------
@@ -59,6 +61,44 @@ public class Room {
 	public String getExitRoom(String direction) {
 		
 		return exits.get(direction);
+	}
+
+	/*---------------------------------------------------------------------
+	 * getRoomItem(String itemName) - Retrieve a room item by name
+	 *---------------------------------------------------------------------*/
+	public Item getRoomItem(String itemName) {
+		
+		for(Item thisItem : roomItems) {
+			
+			if(thisItem.getName().equals(itemName)) {
+				
+				roomItems.remove(thisItem);
+				return thisItem;
+			}
+		}
+		
+		return null;
+	}
+
+	/*---------------------------------------------------------------------
+	 * addRoomItem(Item item)
+	 *---------------------------------------------------------------------*/
+	public void addRoomItem(Item item) {
+		
+		roomItems.add(item);
+	}
+
+	/*---------------------------------------------------------------------
+	 * printRoomItems() - Print all room items
+	 *---------------------------------------------------------------------*/
+	public void printRoomItems() {
+		
+		System.out.println("**Room Items**");
+		
+		for(Item roomItem : roomItems) {
+			
+			System.out.println(roomItem.getName());
+		}
 	}
 	
 	/*---------------------------------------------------------------------

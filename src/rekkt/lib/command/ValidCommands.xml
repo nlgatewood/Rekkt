@@ -13,6 +13,9 @@
 		<value>take</value>
 	</command>
 	<command id="1005">
+		<value>drop</value>
+	</command>
+	<command id="1006">
 		<value>quit</value>
 	</command>
 </validcommands>
