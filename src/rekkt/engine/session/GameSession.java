@@ -2,6 +2,8 @@ package rekkt.engine.session;
 
 import rekkt.engine.command.Command;
 import rekkt.engine.command.Parser;
+import rekkt.engine.items.ContainerItem;
+import rekkt.engine.items.MiscItem;
 import rekkt.engine.maps.Room;
 import rekkt.engine.maps.WorldMap;
 import rekkt.engine.characters.*;
@@ -53,6 +55,14 @@ public class GameSession {
 			inputLine = reader.nextLine();
 			
 			player = new Player(inputLine);
+			player.addContainerItem(new ContainerItem("Bag",5));
+			player.addInventoryItem(new MiscItem("trash1"));
+			player.addInventoryItem(new MiscItem("trash2"));
+			player.addInventoryItem(new MiscItem("trash3"));
+			player.addInventoryItem(new MiscItem("trash4"));
+			player.addInventoryItem(new MiscItem("trash5"));
+			
+			
 			playGame(); 
 		}
 		else if(inputLine.equals("2")) {
@@ -105,12 +115,15 @@ public class GameSession {
 			
 			moveCmd(command);
 		}
-		if(commandWord.equals("inspect")) {
+		else if(commandWord.equals("inspect")) {
 			
 			inspectCmd(command);
 		}
-		//Process "help" Command
-		if(commandWord.equals("help")) {
+		else if(commandWord.equals("take")) {
+			
+			takeCmd(command);
+		}		
+		else if(commandWord.equals("help")) {
 			
 			helpCmd(command);
 		}
@@ -165,6 +178,21 @@ public class GameSession {
 		if(secondWord.equals("area")) {
 			
 			currentRoom.printRoomDescription();
+		}
+		
+	}
+	
+	/*---------------------------------------------------------------------
+	 * takeCmd() - Take item from environment
+	 *---------------------------------------------------------------------*/
+	private void takeCmd(Command command) {
+		
+		String secondWord = command.getSecondWord();
+		
+		if(secondWord == null) {
+			
+			System.out.println("Take what?");
+			return;
 		}
 		
 	}

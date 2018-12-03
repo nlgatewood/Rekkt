@@ -1,6 +1,9 @@
 package rekkt.engine.maps;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import rekkt.engine.items.Item;
 
 /**
  * 
@@ -17,6 +20,7 @@ public class Room {
 	private String xCoord;
 	private String yCoord;
 	private HashMap<String,String> exits;
+	private ArrayList<Item> roomItems;
 
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
@@ -29,6 +33,7 @@ public class Room {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.exits = new HashMap<String,String>();
+		this.roomItems = new ArrayList<Item>();
 		
 		//Map the HashMap
 		for(String direction : exits.keySet()) {
@@ -55,7 +60,7 @@ public class Room {
 		
 		return exits.get(direction);
 	}
-
+	
 	/*---------------------------------------------------------------------
 	 * getId() - Return Room Id
 	 *---------------------------------------------------------------------*/

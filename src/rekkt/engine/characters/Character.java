@@ -1,7 +1,7 @@
 package rekkt.engine.characters;
 
 import java.util.ArrayList;
-import rekkt.engine.items.Item;
+import rekkt.engine.items.*;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class Character {
 	/*---------------------------------------------------------------------
 	 * addInventory(Item item) - Add to inventory
 	 *---------------------------------------------------------------------*/
-	public void addInventory(Item item) {
+	protected void addInventoryItem(Item item) {
 	
 		inventory.add(item);
 	}

@@ -8,14 +8,14 @@ import java.util.ArrayList;
  *
  */
 
-public class Container extends Item {
+public class ContainerItem extends Item {
 	
 	private int containerSize;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
-	public Container(String name, int containerSize) {
+	public ContainerItem(String name, int containerSize) {
 		
 		super(name);
 		this.containerSize = containerSize;
