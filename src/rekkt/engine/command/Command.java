@@ -1,5 +1,7 @@
 package rekkt.engine.command;
 
+import java.util.ArrayList;
+
 /**
  * 
  * @author nlgatewood
@@ -9,16 +11,16 @@ package rekkt.engine.command;
 public class Command {
 
 	private String commandWord;
-	private String secondWord;
+	private ArrayList<String> nextCommandWords;
 	private boolean isValid;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
-	public Command(String commandWord, String secondWord) {
+	public Command(String commandWord, ArrayList<String> nextCommandWords) {
 		
 		this.commandWord = commandWord;
-		this.secondWord = secondWord;
+		this.nextCommandWords = nextCommandWords;
 	}
 	
 	/*---------------------------------------------------------------------
@@ -30,11 +32,26 @@ public class Command {
 	}
 	
 	/*---------------------------------------------------------------------
-	 * getsecondWord() - Return commandWord
+	 * getNextCommandWords() - Return commandWord
 	 *---------------------------------------------------------------------*/
-	public String getSecondWord() {
+	public ArrayList<String> getNextCommandWords() {
 		
-		return secondWord;
+		return nextCommandWords;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getNextCommandWord() - Return commandWord
+	 *---------------------------------------------------------------------*/
+	public String getNextCommandWord(int pos) {
+		
+		String nextCommand = null;
+
+		if(nextCommandWords.size() >= pos+1) {
+			
+			nextCommand = nextCommandWords.get(pos);
+		}
+		
+		return nextCommand;
 	}
 	
 	/*---------------------------------------------------------------------

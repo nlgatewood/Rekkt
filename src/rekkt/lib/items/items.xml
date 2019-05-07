@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items>
+	<item id="I00001">
+		<name>Knife</name>
+		<description>A rusty, old kitchen knife</description>
+		<type>misc</type>
+	</item>
+	<item id="I00002">
+		<name>Yo-Yo</name>
+		<description>A pink yoyo</description>
+		<type>misc</type>
+	</item>
+</items>

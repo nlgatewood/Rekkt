@@ -2,6 +2,8 @@ package rekkt.engine.maps;
 
 import java.util.HashMap;
 
+import org.w3c.dom.NodeList;
+
 /**
  * 
  * @author nlgatewood
@@ -29,6 +31,17 @@ public class WorldMap {
 		Zone zoneO = new Zone("zone1");
 		
 		map.put(zoneO.getId(), zoneO);
+	}
+	
+	/*---------------------------------------------------------------------
+	 * addDefaultZoneItems() - Add Default Zone Items
+	 *---------------------------------------------------------------------*/
+	public void addDefaultZoneItems(NodeList itemsNodeList) {
+		
+		for(String zoneName : map.keySet()) {
+			
+			map.get(zoneName).addDefaultZoneItems(itemsNodeList);
+		}
 	}
 
 	/*---------------------------------------------------------------------

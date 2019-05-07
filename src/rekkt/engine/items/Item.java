@@ -9,13 +9,15 @@ package rekkt.engine.items;
 public class Item {
 	
 	private String name;
+	private String description;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
-	public Item(String name) {
+	public Item(String name, String description) {
 		
 		this.name = name;
+		this.description = description;	
 	}
 	
 	/*---------------------------------------------------------------------
@@ -24,5 +26,13 @@ public class Item {
 	public String getName() {
 		
 		return name;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getDescription() - Return Item's description
+	 *---------------------------------------------------------------------*/
+	public String getDescription() {
+		
+		return description;
 	}
 }

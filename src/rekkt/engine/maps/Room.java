@@ -53,6 +53,7 @@ public class Room {
 						   " "+description+"\n");
 		
 		printRoomItems();
+		printRoomExits();
 	}
 	
 	/*---------------------------------------------------------------------
@@ -69,11 +70,26 @@ public class Room {
 	public Item getRoomItem(String itemName) {
 		
 		for(Item thisItem : roomItems) {
-			
-			if(thisItem.getName().equals(itemName)) {
-				
+			if(thisItem.getName().toUpperCase().equals(itemName.toUpperCase())) {
+
 				roomItems.remove(thisItem);
 				return thisItem;
+			}
+		}
+		
+		return null;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getRoomItemDescription(String itemName) - Retrieve a room item desc
+	 *---------------------------------------------------------------------*/
+	public String getRoomItemDescription(String itemName) {
+		
+		for(Item thisItem : roomItems) {
+
+			if(thisItem.getName().toUpperCase().equals(itemName.toUpperCase())) {
+
+				return thisItem.getDescription();
 			}
 		}
 		
@@ -93,11 +109,34 @@ public class Room {
 	 *---------------------------------------------------------------------*/
 	public void printRoomItems() {
 		
-		System.out.println("**Room Items**");
-		
-		for(Item roomItem : roomItems) {
+		if(!roomItems.isEmpty()) {
 			
-			System.out.println(roomItem.getName());
+			System.out.println("**Room Items**");
+		
+			for(Item roomItem : roomItems) {
+			
+				System.out.println(roomItem.getName());
+			}
+		}
+	}
+
+	/*---------------------------------------------------------------------
+	 * printRoomExits() - Print all room exits
+	 *---------------------------------------------------------------------*/
+	public void printRoomExits() {
+		
+		System.out.print("\nExits:");
+		
+		if(!exits.isEmpty()) {
+			
+			ArrayList<String> exitList = new ArrayList<String>();
+			
+			for(String exit : exits.keySet()) {
+				
+				exitList.add(exit);
+			}
+			
+			System.out.println(String.join(",", exitList));
 		}
 	}
 	

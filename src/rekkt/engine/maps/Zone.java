@@ -9,6 +9,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import rekkt.engine.items.*;
+
+
 /**
  * 
  * @author nlgatewood
@@ -17,30 +20,19 @@ import org.w3c.dom.NodeList;
 
 public class Zone {
 	
-	private String zoneFile;
 	private String zoneId;
 	private String zoneName;
 	private HashMap<String,Room> rooms;
+	private NodeList zoneNodeList;
 
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
 	public Zone(String zoneFile) {
 		
-		this.zoneFile = zoneFile;
-		zoneId = null;
-		zoneName = null;
 		rooms = new HashMap<String,Room>();
 		
-		//Load Rooms in Zone
-		loadRooms();
-	}
-	
-	/*---------------------------------------------------------------------
-	 * loadRooms() - Load all rooms in the zone into the Hash
-	 *---------------------------------------------------------------------*/
-	private void loadRooms() {
-		
+		//Read Zone XML File
 	    try {
 	    	File fXmlFile = new File("src/rekkt/lib/maps/"+zoneFile+".xml");
 	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -49,45 +41,109 @@ public class Zone {
 	    			
 	    	doc.getDocumentElement().normalize();
 	    	
-	    	//Get Zone ID and Name
+	    	//Get Zone ID, Name, and NodeList
 	    	zoneId = doc.getElementsByTagName("zoneid").item(0).getTextContent();
 	    	zoneName = doc.getElementsByTagName("zonename").item(0).getTextContent();
-
-	    	//Get zone rooms
-	    	NodeList nList = doc.getElementsByTagName("room");
-
-	    	for(int x=0; x<nList.getLength(); x++) {
-	    	
-	    		Node nNode = nList.item(x);
-	    		
-	    		if(nNode.getNodeType() == Node.ELEMENT_NODE){
-	    			
-	    			Element eElement = (Element) nNode;
-
-	    			String id = eElement.getAttribute("id");
-	    			String xCoord = eElement.getElementsByTagName("xcoord").item(0).getTextContent();
-	    			String yCoord = eElement.getElementsByTagName("ycoord").item(0).getTextContent();
-	    			String name = eElement.getElementsByTagName("name").item(0).getTextContent();
-	    			String description = eElement.getElementsByTagName("description").item(0).getTextContent();
-	    			
-	    			//Get rooms exits, add to hash
-	    			NodeList exitNode = eElement.getElementsByTagName("exit");
-	    			HashMap<String,String> exits = new HashMap<String,String>();
-	    			  			
-	    			for(int y=0; y<exitNode.getLength(); y++) {
-
-	    				exits.put(exitNode.item(y).getAttributes().item(0).getTextContent(), exitNode.item(y).getTextContent());
-	    			}
-	    			
-	    			//Add room to zone hashMap
-	    			rooms.put(id, new Room(id, xCoord, yCoord, name, description, exits));
-	    		}
-	    	}	    	
+	    	zoneNodeList = doc.getElementsByTagName("room");
 	    } 
 	    catch (Exception e) {
 	    	e.printStackTrace();
-	    }  
+	    }
+		
+		//Load Rooms in Zone
+		createRooms();
 	}
+	
+	/*---------------------------------------------------------------------
+	 * loadRooms() - Load all rooms in the zone into the Hash from XML Nodelist
+	 *---------------------------------------------------------------------*/
+	private void createRooms() {
+		
+	    for(int x=0; x<zoneNodeList.getLength(); x++) {
+	    	
+	    	Node nNode = zoneNodeList.item(x);
+	    		
+	    	if(nNode.getNodeType() == Node.ELEMENT_NODE){
+	    			
+	    		Element eElement = (Element) nNode;
+
+	    		String id = eElement.getAttribute("id");
+	    		String xCoord = eElement.getElementsByTagName("xcoord").item(0).getTextContent();
+	    		String yCoord = eElement.getElementsByTagName("ycoord").item(0).getTextContent();
+	    		String name = eElement.getElementsByTagName("name").item(0).getTextContent();
+	    		String description = eElement.getElementsByTagName("description").item(0).getTextContent();
+	    			
+	    		//Get rooms exits, add to hash
+	    		NodeList exitNode = eElement.getElementsByTagName("exit");
+	    		HashMap<String,String> exits = new HashMap<String,String>();
+	    			  			
+	    		for(int y=0; y<exitNode.getLength(); y++) {
+
+	    			exits.put(exitNode.item(y).getAttributes().item(0).getTextContent(), exitNode.item(y).getTextContent());
+	    		}
+	    			
+	    		//Add room to zone hashMap
+	    		rooms.put(id, new Room(id, xCoord, yCoord, name, description, exits));
+	    	}
+	    }	    	
+	}
+	
+	/*---------------------------------------------------------------------
+	 * addDefaultZoneItems() - Add default Items to the Rooms
+	 *---------------------------------------------------------------------*/
+	public void addDefaultZoneItems(NodeList itemsNodeList) {
+		
+		//Loop through rooms in this zone
+	    for(int x=0; x<zoneNodeList.getLength(); x++) {
+	    	
+	    	Node zoneNode = zoneNodeList.item(x);
+	    			
+	    	Element eElement = (Element) zoneNode;
+
+    		String roomId = eElement.getAttribute("id");
+	    			
+    		//Get rooms exits, add to hash
+    		NodeList zoneItemNode = eElement.getElementsByTagName("item");
+	    		
+    		//Loop through each room Item
+    		for(int y=0; y<zoneItemNode.getLength(); y++) {
+	    			
+    			String itemNum = eElement.getElementsByTagName("item").item(y).getTextContent();
+    			
+    			System.out.println("item"+itemNum);
+
+    			//Loop through each item from the Items List
+    			for(int z=0; z<itemsNodeList.getLength(); z++) {
+	    				
+    		    	Node itemNNode = itemsNodeList.item(z);
+    		    	Element itemEElement = (Element) itemNNode;
+    		    	
+    		    	//If item number is the same, create the item
+    				if(itemNum.equals(itemEElement.getAttribute("id"))) {
+	    					
+	   					String itemName = itemEElement.getElementsByTagName("name").item(0).getTextContent();
+	   					String itemDescription = itemEElement.getElementsByTagName("description").item(0).getTextContent();
+	   					String itemType = itemEElement.getElementsByTagName("type").item(0).getTextContent();
+	   					Item newItem = null;
+
+	   					//If this is a container Item, create a ContainerItem
+	   					if(itemType.equals("contain")) {
+	   						
+	   						int itemSize = Integer.parseInt(itemEElement.getElementsByTagName("type").item(0).getTextContent());
+	   						newItem = new ContainerItem(itemName,itemDescription, itemSize);
+	   					}
+	   					//Else, this is a misc item
+	   					else {
+	   						newItem = new MiscItem(itemName, itemDescription);
+	   					}
+	   					
+	   					rooms.get(roomId).addRoomItem(newItem);
+	   				}
+	   			}	
+	   		}   	
+	    }	
+	}
+	
 	/*---------------------------------------------------------------------
 	 * getRoom(String roomId) - Return Room Object
 	 *---------------------------------------------------------------------*/

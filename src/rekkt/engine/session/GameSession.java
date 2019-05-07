@@ -9,7 +9,15 @@ import rekkt.engine.maps.Room;
 import rekkt.engine.maps.WorldMap;
 import rekkt.engine.characters.*;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -24,6 +32,7 @@ public class GameSession {
 	private WorldMap mapO;
 	private String currentZone;
 	private Room currentRoom;
+	private NodeList itemsNodeList;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
@@ -56,16 +65,8 @@ public class GameSession {
 			inputLine = reader.nextLine();
 			
 			player = new Player(inputLine);
-			//player.addContainerItem(new ContainerItem("Bag",5));
-			player.addInventoryItem(new MiscItem("trash1"));
-			player.addInventoryItem(new MiscItem("trash2"));
-			player.addInventoryItem(new MiscItem("trash3"));
-			//player.addInventoryItem(new MiscItem("trash4"));
-			//player.addInventoryItem(new MiscItem("trash5"));
 			
-			
-			
-			playGame(); 
+			loadGame(); 
 		}
 		else if(inputLine.equals("2")) {
 			
@@ -74,18 +75,44 @@ public class GameSession {
 	}
 	
 	/*---------------------------------------------------------------------
+	 * loadItemList() - 
+	 *---------------------------------------------------------------------*/
+	private NodeList loadItemList() {
+		
+		NodeList itemsList = null;
+		
+	    try {
+	    	File fXmlFile = new File("src/rekkt/lib/items/items.xml");
+	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	    	Document doc = dBuilder.parse(fXmlFile);
+	    			
+	    	doc.getDocumentElement().normalize();
+	    	
+	    	itemsList = doc.getElementsByTagName("item");
+	    } 
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	    
+	    return itemsList;
+	}
+	
+	/*---------------------------------------------------------------------
 	 * playGame() - play game
 	 *---------------------------------------------------------------------*/
-	private void playGame() {
+	private void loadGame() {
 		
 		boolean wantToQuit = false;
 		
-		//Create World - Set Room
-		mapO = new WorldMap();
+		mapO = new WorldMap();			//Create World Map
+		itemsNodeList = loadItemList(); // Create Item NodeList
+		
+		//Load Items into Map
+		mapO.addDefaultZoneItems(itemsNodeList);
+		
 		currentRoom = mapO.getZone(currentZone).getRoom("1001");
 		
-		currentRoom.addRoomItem(new Item("potion1"));
-		currentRoom.addRoomItem(new Item("potion2"));
 
 		currentRoom.printRoomDescription();
 		
@@ -149,24 +176,29 @@ public class GameSession {
 	 *---------------------------------------------------------------------*/
 	private void moveCmd(Command command){
 		
-		String secondWord = command.getSecondWord();
+		ArrayList<String> nextCommandWords = command.getNextCommandWords();
 		
-		if(secondWord == null) {
+		if(nextCommandWords.size() == 0) {
 			
 			System.out.println("Go where?");
 			return;
 		}
 		
-		//Get new Room - Move to new room if found
-		String newRoom = currentRoom.getExitRoom(secondWord);
-		
-		if(newRoom != null) {
+		//run through the list of directions
+		for(String nextCommand : nextCommandWords) {
 			
-			currentRoom = mapO.getZone(currentZone).getRoom(newRoom);
-			currentRoom.printRoomDescription();
-		}
-		else {
-			System.out.println("Can't go '"+secondWord+"'");
+			//Get new Room - Move to new room if found
+			String newRoom = currentRoom.getExitRoom(nextCommand);
+			
+			if(newRoom != null) {
+				
+				currentRoom = mapO.getZone(currentZone).getRoom(newRoom);
+				currentRoom.printRoomDescription();
+			}
+			else {
+				System.out.println("Can't go '"+nextCommand+"'");
+			}
+			
 		}
 	}
 
@@ -176,7 +208,7 @@ public class GameSession {
 	 *---------------------------------------------------------------------*/
 	private void inspectCmd(Command command) {
 		
-		String secondWord = command.getSecondWord();
+		String secondWord = command.getNextCommandWord(0);
 		
 		if(secondWord == null) {
 			
@@ -185,26 +217,36 @@ public class GameSession {
 		}
 		
 		//Inspect the area
-		if(secondWord.equals("area")) {
+		if(secondWord.equals("room")) {
 			
-			currentRoom.printRoomDescription();
+			String thirdCommandWord = command.getNextCommandWord(1);
+
+			//If no item specified, inspect the room
+			if(thirdCommandWord != null) {
+				
+				String inspectItem = currentRoom.getRoomItemDescription(thirdCommandWord);
+				
+				if(inspectItem != null) {
+					
+					System.out.println(inspectItem);
+				}
+				else {
+					System.out.println("Can't find a "+thirdCommandWord+" to inspect.");
+				}
+			}
+			// Inspect the room
+			else {
+				currentRoom.printRoomDescription();
+			}
 		}
 		//Inspect the players inventory
 		else if(secondWord.equals("inventory")) {
 			
 			player.printInventoryItems();
 		}
-		//Else, inspect the items
+		//Else, idk...
 		else {
-			Item inspectItem = currentRoom.getRoomItem(secondWord);
-			
-			if(inspectItem != null) {
-				
-				System.out.println(inspectItem.getName());
-			}
-			else {
-				System.out.println("Can't find a "+secondWord+"to inspect.");
-			}
+			System.out.println("Can't find a "+secondWord+" to inspect.");
 		}
 	}
 	
@@ -213,7 +255,7 @@ public class GameSession {
 	 *---------------------------------------------------------------------*/
 	private void takeCmd(Command command) {
 		
-		String secondWord = command.getSecondWord();
+		String secondWord = command.getNextCommandWord(0);
 		
 		if(secondWord == null) {
 			
@@ -221,18 +263,33 @@ public class GameSession {
 			return;
 		}
 		
-		//Take item from environment
-		Item takeItem = currentRoom.getRoomItem(secondWord);
+		//Take an item from your current room
+		if(secondWord.equals("room")) {
 			
-		if(takeItem != null) {
+			String thirdCommandWord = command.getNextCommandWord(1);
+			
+			if(thirdCommandWord != null) {
 				
-			player.addInventoryItem(takeItem);
-			System.out.println(takeItem.getName()+" added to your inventory");
+				//Take item from environment
+				Item takeItem = currentRoom.getRoomItem(thirdCommandWord);
+					
+				if(takeItem != null) {
+						
+					player.addInventoryItem(takeItem);
+					System.out.println(takeItem.getName()+" added to your inventory");
+				}
+				else {
+					System.out.println("Can't find a "+thirdCommandWord+"to take");
+				}
+			}
+			//If item is not specified
+			else {
+				System.out.println("Take what from room?");
+			}
 		}
 		else {
-			System.out.println("Can't find a "+secondWord+"to take");
+			System.out.println("Take what from where?");
 		}
-		
 	}
 	
 	/*---------------------------------------------------------------------
@@ -240,7 +297,7 @@ public class GameSession {
 	 *---------------------------------------------------------------------*/
 	private void dropCmd(Command command) {
 		
-		String secondWord = command.getSecondWord();
+		String secondWord = command.getNextCommandWord(0);
 		
 		if(secondWord == null) {
 			

@@ -11,8 +11,8 @@ public class MiscItem extends Item{
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
-	public MiscItem(String name) {
+	public MiscItem(String name, String description) {
 		
-		super(name);
+		super(name, description);
 	}
 }

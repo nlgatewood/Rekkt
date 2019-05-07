@@ -1,5 +1,6 @@
 package rekkt.engine.command;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 /**
  * 
@@ -29,7 +30,7 @@ public class Parser {
 		Command command = null;
 		String inputLine;
 		String commandWord = null;
-		String secondWord = null;
+		ArrayList<String> secondWords = new ArrayList<String>();
 		
 		System.out.print("> ");
 		
@@ -42,13 +43,13 @@ public class Parser {
 
             commandWord = tokenizer.next();
             
-            if(tokenizer.hasNext()) {
-                
-                secondWord = tokenizer.next();
+            while(tokenizer.hasNext()) {
+            	
+            	secondWords.add(tokenizer.next());
             }
         }
-
-    	command = new Command(commandWord, secondWord);
+        
+    	command = new Command(commandWord, secondWords);
     	
         //Validate  Command
         if(commandValidator.validateCommand(commandWord)) {

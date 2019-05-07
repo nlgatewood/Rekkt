@@ -1,7 +1,5 @@
 package rekkt.engine.items;
 
-import java.util.ArrayList;
-
 /**
  * 
  * @author nlgatewood
@@ -15,9 +13,9 @@ public class ContainerItem extends Item {
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
 	 *---------------------------------------------------------------------*/
-	public ContainerItem(String name, int containerSize) {
+	public ContainerItem(String name, String description, int containerSize) {
 		
-		super(name);
+		super(name, description);
 		this.containerSize = containerSize;
 	}
 	

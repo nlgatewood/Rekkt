@@ -38,10 +38,26 @@ public class Character {
 	
 		for(Item item : inventory) {
 			
-			if(item.getName().equals(itemName)) {
+			if(item.getName().toUpperCase().equals(itemName.toUpperCase())) {
 				
 				inventory.remove(item);
 				return item;
+			}
+		}
+		
+		return null;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getInventoryItemDescription(String itemName) - get item from player's inventory
+	 *---------------------------------------------------------------------*/
+	public String getInventoryItemDescription(String itemName) {
+	
+		for(Item item : inventory) {
+			
+			if(item.getName().toUpperCase().equals(itemName.toUpperCase())) {
+				
+				return item.getDescription();
 			}
 		}
 		
