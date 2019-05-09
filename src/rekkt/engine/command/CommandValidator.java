@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class CommandValidator {
 
 	private ArrayList<String> validCommands;
+	private HashMap<String,String> validCommandAliases;
 	
 	/*---------------------------------------------------------------------
 	 * CONSTRUCTOR
@@ -26,7 +28,9 @@ public class CommandValidator {
 	public CommandValidator() {
 		
 		validCommands = new ArrayList<String>();
+		validCommandAliases = new HashMap<String,String>();
 		loadValidCommands();
+		loadCommandAliases();
 	}
 	
 	/*---------------------------------------------------------------------
@@ -44,6 +48,25 @@ public class CommandValidator {
 		}
 		
 		return false;
+	}
+	
+	/*---------------------------------------------------------------------
+	 * getCommandAlias(commandWord) - 
+	 *---------------------------------------------------------------------*/
+	public String getCommandAlias(String commandWord) {
+		
+		String aliasedCommand = null;
+		
+		if(validCommandAliases.containsKey(commandWord)) {
+			
+			aliasedCommand = validCommandAliases.get(commandWord);
+		}
+		else {
+			aliasedCommand = commandWord;
+		}
+		
+
+		return aliasedCommand;
 	}
 	
 	/*---------------------------------------------------------------------
@@ -71,6 +94,42 @@ public class CommandValidator {
 	    			Element eElement = (Element) nNode;
 	    			
 	    			validCommands.add(eElement.getElementsByTagName("value").item(0).getTextContent());
+	    		}
+	    	}	    	
+	    } 
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }  
+	}
+	
+	/*---------------------------------------------------------------------
+	 * loadCommandAliases() - 
+	 *---------------------------------------------------------------------*/
+	private void loadCommandAliases() {
+		
+	    try {
+
+	    	File fXmlFile = new File("src/rekkt/lib/command/ValidCommandAliases.xml");
+	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	    	Document doc = dBuilder.parse(fXmlFile);
+	    			
+	    	doc.getDocumentElement().normalize();
+	    			
+	    	NodeList nList = doc.getElementsByTagName("command");
+
+	    	for(int x=0; x<nList.getLength(); x++) {
+	    	
+	    		Node nNode = nList.item(x);
+	    		
+	    		if(nNode.getNodeType() == Node.ELEMENT_NODE){
+	    			
+	    			Element eElement = (Element) nNode;
+	    			
+	    			String command = eElement.getElementsByTagName("value").item(0).getTextContent();
+	    			String alias = eElement.getElementsByTagName("alias").item(0).getTextContent();
+	    			
+	    			validCommandAliases.put(alias, command);
 	    		}
 	    	}	    	
 	    } 

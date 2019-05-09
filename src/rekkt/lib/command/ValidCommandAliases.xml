@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commandAliases>
+	<command>
+		<value>north</value>
+		<alias>n</alias>
+	</command>
+	<command>
+		<value>south</value>
+		<alias>s</alias>
+	</command>
+		<command>
+		<value>east</value>
+		<alias>e</alias>
+	</command>
+		<command>
+		<value>west</value>
+		<alias>w</alias>
+	</command>
+</commandAliases>

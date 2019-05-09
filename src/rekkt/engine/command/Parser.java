@@ -49,6 +49,12 @@ public class Parser {
             }
         }
         
+        //Cycle through alias
+        for(int i=0; i<secondWords.size(); i++) {
+
+        	secondWords.set(i, commandValidator.getCommandAlias(secondWords.get(i)));
+        }
+        
     	command = new Command(commandWord, secondWords);
     	
         //Validate  Command
